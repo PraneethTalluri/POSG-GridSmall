@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -27,6 +28,8 @@ public class Main {
 		for (int i = 0; i < horizon; ++i) {
 
 			Iterator<TreeNode> it = currentNode.leavesIterator();
+			ArrayList<TreeNode> leavesToRemove = new ArrayList<TreeNode>();
+
 			while (it.hasNext()) {
 				Computation computationObj = new Computation();
 
@@ -84,6 +87,10 @@ public class Main {
 											((PolicyTree) iterationPruningNode
 													.getObject()).getValue());
 
+									if (k == 1) {
+										leavesToRemove
+												.add(iterationPruningNode);
+									}
 									if (k == -1) {
 										flag = 1;
 									}
@@ -101,6 +108,17 @@ public class Main {
 				}
 
 			}
+
+			for (TreeNode toRemove : leavesToRemove) {
+				TreeNode parent = null;
+				if (toRemove != null) {
+					parent = toRemove.getParent();
+				}
+				if (parent != null) {
+					parent.remove(toRemove);
+				}
+			}
+			leavesToRemove.clear();
 		}
 
 		Iterator<TreeNode> itDisplay = root.leavesIterator();
@@ -113,8 +131,11 @@ public class Main {
 				Iterator<TreeNode> listIterator = displayList.iterator();
 				while (listIterator.hasNext()) {
 					TreeNode displayElement = listIterator.next();
+					if(displayElement != root)
+					{
 					System.out
 							.println(((PolicyTree) displayElement.getObject()));
+					}
 				}
 
 			}
